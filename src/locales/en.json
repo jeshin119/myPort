@@ -94,6 +94,7 @@
         "invalidEmail": "Please enter a valid email address.",
         "tooLong": "This is too long.",
         "rateLimited": "Too many attempts. Please wait a moment before sending again.",
+        "captcha": "Please complete the verification and try again.",
         "server": "Something went wrong while sending. Please try again later.",
         "network": "Network error. Check your connection and try again.",
         "config": "The mail service isn't configured yet."
