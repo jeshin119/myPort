@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { useI18n } from "@/lib/i18n";
-import { profile } from "@/lib/content";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -42,7 +41,7 @@ export default function Hero() {
         custom={0.3}
         className="text-6xl font-extrabold leading-[1.02] tracking-tight sm:text-7xl lg:text-8xl"
       >
-        {profile.name}
+        {t("hero.name")}
         <span className="text-accent">.</span>
       </motion.h1>
 

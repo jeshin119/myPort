@@ -7,13 +7,14 @@
   },
   "hero": {
     "greeting": "Hello! I'm",
+    "name": "Jeshin",
     "role": "A BACKEND DEVELOPER",
-    "tagline": "I build reliable APIs and infrastructure that scale.",
+    "tagline": "From a from-scratch web server to backend services, infrastructure, and AI — I build things end to end and see them through.",
     "scroll": "SCROLL DOWN"
   },
   "about": {
     "label": "ABOUT ME",
-    "body": "I am a backend developer who loves designing clean APIs and solid infrastructure. I studied systems programming at 42Seoul and build services with FastAPI, Spring, and AWS. I care deeply about security, performance, and code that reads well. Currently looking for a team where I can grow as a backend engineer."
+    "body": "I'm a backend developer who treats code as a way to solve problems, not just to compute answers. That conviction began with a class project modeling electric-vehicle versus combustion-engine dynamics in MATLAB, grew through a year of measuring and validating composite-material data as an undergraduate researcher, and took shape at 42Seoul, where I learned C/C++ systems programming and how verifying things at the root makes a team stronger. I've since worked across web servers, backend services, infrastructure, and AI."
   },
   "whatido": {
     "title": "WHAT I DO",
@@ -21,12 +22,12 @@
       "backend": {
         "title": "BACKEND DEVELOPER",
         "subtitle": "Designing & building server-side systems",
-        "body": "REST APIs with FastAPI and Spring, authentication middleware, and data modeling with MySQL and Redis. I focus on secure, well-tested server code."
+        "body": "REST APIs with FastAPI, Express, and Spring, RBAC and JWT auth, and data modeling across RDS, DynamoDB, and S3. I care about secure, well-tested server code — down to building a web server from scratch."
       },
       "infra": {
-        "title": "INFRA & DEVOPS",
-        "subtitle": "Shipping and operating services",
-        "body": "Containerizing with Docker, deploying to AWS, S3 presigned workflows, CI/CD pipelines, and Linux server operations."
+        "title": "INFRA, SECURITY & AI",
+        "subtitle": "Shipping, securing, and operating services",
+        "body": "Containerizing with Docker, provisioning AWS with Terraform, CI/CD with GitHub Actions and Jenkins, automation with Ansible — plus security assessments and grounded LLM/RAG pipelines."
       }
     }
   },
@@ -38,22 +39,22 @@
       "now": {
         "label": "NOW",
         "heading": "Building & job hunting",
-        "body": "Sharpening backend skills with personal projects while preparing to join a great engineering team."
+        "body": "Sharpening my backend skills through projects while preparing to join a strong engineering team."
       },
       "2025": {
         "label": "2025",
-        "heading": "Safe Slack API project",
-        "body": "Designed and built a secure file-sharing API with FastAPI, S3 presigned URLs, and custom auth middleware."
+        "heading": "Hands-on projects",
+        "body": "Built a security-hardened collaboration platform, automated infrastructure security assessments, and ran a red-team pentest on a legacy e-commerce service — spanning backend, cloud, security, and AI."
       },
       "2024": {
         "label": "2024",
-        "heading": "42Seoul deep dive",
-        "body": "Completed core curriculum projects covering C, networking, and system programming through peer-to-peer learning."
+        "heading": "42Seoul",
+        "body": "Learned C/C++ systems programming project-first, including a from-scratch web server, and grew through peer-to-peer code review and collaboration."
       },
       "2023": {
         "label": "2023",
-        "heading": "Started the journey",
-        "body": "Began studying computer science fundamentals and backend development through an intensive bootcamp."
+        "heading": "Undergraduate research",
+        "body": "Spent a year measuring and validating composite-material data as an undergraduate researcher — where verifying with data, rather than trusting given values, became my default."
       }
     }
   },
