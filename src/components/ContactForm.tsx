@@ -9,6 +9,10 @@ import {
   type ContactErrors,
   type ContactField,
 } from "@/lib/contact-validation";
+import TurnstileWidget from "./TurnstileWidget";
+
+// 사이트 키(공개값). 미설정 시 캡차 위젯을 렌더하지 않는다.
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -35,9 +39,19 @@ export default function ContactForm({ embedded = false }: { embedded?: boolean }
   const [cooldownUntil, setCooldownUntil] = useState<number | null>(null);
   // 표시용 남은 초 (0이면 다시 보낼 수 있음)
   const [cooldown, setCooldown] = useState(0);
+  // Turnstile: 발급된 토큰과, 전송 후 위젯을 새로 렌더하기 위한 키
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [captchaKey, setCaptchaKey] = useState(0);
 
   const submitting = status === "submitting";
   const disabled = submitting || cooldown > 0;
+
+  // 전송 시도 후 1회용 토큰을 폐기하고 위젯을 새로 렌더한다.
+  const resetCaptcha = () => {
+    if (!TURNSTILE_SITE_KEY) return;
+    setCaptchaToken("");
+    setCaptchaKey((k) => k + 1);
+  };
 
   const startCooldown = () => {
     setCooldownUntil(Date.now() + COOLDOWN_SECONDS * 1000);
@@ -82,11 +96,18 @@ export default function ContactForm({ embedded = false }: { embedded?: boolean }
       return;
     }
 
+    // 2) 캡차 완료 여부 (사이트 키가 설정된 경우에만 요구)
+    if (TURNSTILE_SITE_KEY && !captchaToken) {
+      setStatus("error");
+      setFormError("captcha");
+      return;
+    }
+
     setErrors({});
     setFormError(null);
     setStatus("submitting");
 
-    // 2) 서버(Route Handler)로 전송
+    // 3) 서버(Route Handler)로 전송
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
@@ -94,11 +115,15 @@ export default function ContactForm({ embedded = false }: { embedded?: boolean }
         body: JSON.stringify({
           ...result.data,
           [HONEYPOT_FIELD]: honeypotRef.current?.value ?? "",
+          turnstileToken: captchaToken,
         }),
       });
       const data = (await res.json().catch(() => null)) as
         | { ok: boolean; error?: string; fields?: ContactErrors }
         | null;
+
+      // 토큰은 1회용 — 서버로 보낸 뒤에는 성공·실패와 무관하게 새로 발급받는다
+      resetCaptcha();
 
       if (res.ok && data?.ok) {
         setStatus("success");
@@ -114,7 +139,9 @@ export default function ContactForm({ embedded = false }: { embedded?: boolean }
       setFormError(data?.error ?? "server");
       setStatus("error");
     } catch {
-      // 네트워크 오류
+      // 네트워크 오류 — 서버에 도달 못 했으면 토큰은 아직 유효하나,
+      // 상태를 단순하게 유지하기 위해 위젯을 새로 렌더한다.
+      resetCaptcha();
       setFormError("network");
       setStatus("error");
     }
@@ -227,6 +254,17 @@ export default function ContactForm({ embedded = false }: { embedded?: boolean }
           <p className="text-red-500">{t(`contact.form.errors.${formError}`)}</p>
         )}
       </div>
+
+      {/* Cloudflare Turnstile (사이트 키가 설정된 경우에만) */}
+      {TURNSTILE_SITE_KEY && (
+        <div className="mt-4">
+          <TurnstileWidget
+            siteKey={TURNSTILE_SITE_KEY}
+            onToken={setCaptchaToken}
+            resetKey={captchaKey}
+          />
+        </div>
+      )}
 
       {/* Send */}
       <motion.button
