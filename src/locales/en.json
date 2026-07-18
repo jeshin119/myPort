@@ -7,26 +7,28 @@
   },
   "hero": {
     "greeting": "Hello! I'm",
+    "name": "Jeshin",
+    "nameSuffix": "",
     "role": "A BACKEND DEVELOPER",
     "tagline": "I build reliable APIs and infrastructure that scale.",
     "scroll": "SCROLL DOWN"
   },
   "about": {
     "label": "ABOUT ME",
-    "body": "I am a backend developer who loves designing clean APIs and solid infrastructure. I studied systems programming at 42Seoul and build services with FastAPI, Spring, and AWS. I care deeply about security, performance, and code that reads well. Currently looking for a team where I can grow as a backend engineer."
+    "body": "I'm a backend developer who turns business requirements into stable server architecture and data models — using AI to move faster while verifying quality and reliability myself. At 42Seoul I built my computer-science and systems-programming foundations through project-based work, and I develop backend services and cloud environments with Python (FastAPI), Java (Spring Boot), and AWS. I want to grow into an engineer who weighs scalability and operations together."
   },
   "whatido": {
     "title": "WHAT I DO",
     "cards": {
       "backend": {
-        "title": "BACKEND DEVELOPER",
+        "title": "BACKEND DEVELOPMENT",
         "subtitle": "Designing & building server-side systems",
-        "body": "REST APIs with FastAPI and Spring, authentication middleware, and data modeling with MySQL and Redis. I focus on secure, well-tested server code."
+        "body": "REST API design, authentication and authorization, data modeling, and performance-minded server development. I value maintainable structure and clear business logic."
       },
       "infra": {
         "title": "INFRA & DEVOPS",
         "subtitle": "Shipping and operating services",
-        "body": "Containerizing with Docker, deploying to AWS, S3 presigned workflows, CI/CD pipelines, and Linux server operations."
+        "body": "Building Docker-based container environments and AWS infrastructure, with CI/CD for stable, repeatable deployments. I aim for services designed with operations and scaling in mind."
       }
     }
   },
@@ -37,23 +39,23 @@
     "items": {
       "now": {
         "label": "NOW",
-        "heading": "Building & job hunting",
-        "body": "Sharpening backend skills with personal projects while preparing to join a great engineering team."
+        "heading": "Growing & job hunting",
+        "body": "Sharpening my backend skills through projects while preparing to join a strong engineering team."
       },
       "2025": {
         "label": "2025",
-        "heading": "Safe Slack API project",
-        "body": "Designed and built a secure file-sharing API with FastAPI, S3 presigned URLs, and custom auth middleware."
+        "heading": "Hyundai AutoEver School — Security (2nd cohort)",
+        "body": "Studied network, system, and web-application security; AWS and cloud security; Docker/Kubernetes security; WAF/IPS operations; vulnerability assessment and penetration testing; incident response; and ISMS and information-security regulations."
       },
       "2024": {
         "label": "2024",
-        "heading": "42Seoul deep dive",
-        "body": "Completed core curriculum projects covering C, networking, and system programming through peer-to-peer learning."
+        "heading": "42Seoul",
+        "body": "Learned project-first, from defining requirements through design, implementation, and testing. Alongside peer collaboration and code review, I worked on custom library implementation, I/O and file handling, systems programming, data structures and algorithms, OS and servers, graphics and games, and web/full-stack."
       },
       "2023": {
         "label": "2023",
-        "heading": "Started the journey",
-        "body": "Began studying computer science fundamentals and backend development through an intensive bootcamp."
+        "heading": "Where it began",
+        "body": "Built my foundations by studying algorithms and networking on my own."
       }
     }
   },

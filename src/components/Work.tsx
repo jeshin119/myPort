@@ -13,6 +13,8 @@ import { projects, type Project } from "@/lib/content";
 
 function ProjectCard({ project }: { project: Project }) {
   const { t, locale } = useI18n();
+  // 이미지 경로는 있으나 파일이 없거나 로드 실패 시 그라데이션 플레이스홀더로 폴백
+  const [imgError, setImgError] = useState(false);
 
   return (
     <article className="glass-card flex w-[85vw] max-w-[420px] shrink-0 flex-col rounded-3xl p-7 shadow-xl shadow-accent/5 sm:w-[420px]">
@@ -26,19 +28,29 @@ function ProjectCard({ project }: { project: Project }) {
       </div>
 
       <h3 className="mt-4 text-2xl font-bold">{project.title}</h3>
-      <p className="mt-2 min-h-[3.5rem] text-sm leading-relaxed text-muted">
+      {/* 데스크톱(sm+, 카드폭 고정)에선 설명 높이를 고정해 카드 간 이미지·기술스택이
+          가로로 정렬되게 한다. 고정 높이보다 긴 글은 잘리지 않고 내부 스크롤된다.
+          모바일에선 자연스럽게 흐르도록 둔다. */}
+      <p className="mt-2 min-h-[3.5rem] text-sm leading-relaxed text-muted sm:h-[11rem] sm:min-h-0 sm:overflow-y-auto sm:pr-1 [scrollbar-width:thin]">
         {project.description[locale]}
       </p>
 
       {/* 스크린샷 (없으면 그라데이션 플레이스홀더) */}
-      <div className="mt-5 aspect-video w-full overflow-hidden rounded-xl border border-border-soft">
-        {project.image ? (
+      <div className="mt-5 aspect-video w-full overflow-hidden rounded-xl border border-border-soft bg-gradient-to-br from-accent-soft/15 via-blob-blue/10 to-blob-mint/15">
+        {project.image && !imgError ? (
+          // cover: 카드를 꽉 채우고 넘치는 부분은 잘림(중앙 기준).
+          // contain: 전체를 중앙에 담고 남는 여백은 그라데이션 배경으로 채움.
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={project.image}
             alt={`${project.title} screenshot`}
-            className="h-full w-full object-cover"
+            className={
+              (project.imageFit ?? "cover") === "contain"
+                ? "h-full w-full object-contain p-3"
+                : "h-full w-full object-cover object-center"
+            }
             loading="lazy"
+            onError={() => setImgError(true)}
           />
         ) : (
           <div
