@@ -22,19 +22,18 @@ export default function Header() {
       className="glass-card fixed inset-x-0 top-0 z-50 border-b"
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8">
-        {/* 좌측 로고 (이니셜) */}
+        {/* 좌측 로고 — "J." 닷 워드마크. 호버 시 풀네임 "Jeshin."으로 확장 */}
         <a
           href="#top"
-          aria-label="Back to top"
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-foreground text-sm font-bold text-white transition-transform hover:scale-110"
+          aria-label={`${profile.name} — back to top`}
+          className="group inline-flex items-baseline text-2xl font-extrabold tracking-tight text-foreground"
         >
           {profile.name.charAt(0).toUpperCase()}
+          <span className="inline-block max-w-0 overflow-hidden opacity-0 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:max-w-[7rem] group-hover:opacity-100">
+            {profile.name.slice(1)}
+          </span>
+          <span className="text-accent">.</span>
         </a>
-
-        {/* 중앙 이메일 — 표시용 텍스트 (링크 호출 없음) */}
-        <span className="hidden select-all text-sm tracking-widest text-muted md:block">
-          {profile.email}
-        </span>
 
         {/* 우측 내비 + 언어 토글 */}
         <nav aria-label="Primary" className="flex items-center gap-4 sm:gap-7">
