@@ -27,6 +27,11 @@ export interface Project {
   tools: string[];
   /** public/ 아래 스크린샷 경로. 없으면 그라데이션 플레이스홀더 렌더링 */
   image?: string;
+  /**
+   * 이미지 맞춤 방식. 기본 "cover"(카드를 꽉 채우고 넘치는 부분은 잘림).
+   * 로고처럼 잘리면 안 되는 이미지는 "contain"(전체를 보이고 여백은 그라데이션).
+   */
+  imageFit?: "cover" | "contain";
   github?: string;
   demo?: string;
   description: { en: string; ko: string };
@@ -36,45 +41,81 @@ export const projects: Project[] = [
   {
     number: "01",
     title: "Vintage Market",
-    category: "Security / Pentest",
-    tools: ["React", "Node.js / Express", "Socket.IO", "MySQL", "Docker", "Jenkins", "Burp Suite"],
-    github: "https://github.com/jeshin119/secure-marketplace-platform",
+    category: "Backend / Pentest",
+    image: "/images/img_vintageMarket.png",
+    tools: [
+      "React",
+      "Node.js / Express",
+      "Socket.IO",
+      "MySQL / Sequelize",
+      "Docker",
+      "Jenkins",
+      "Burp Suite",
+    ],
+    github: "https://github.com/jeshin119/autoever-security2-redteam",
     description: {
-      en: "A legacy e-commerce service built and then attacked under a red-team engagement scenario (4 people, 2 weeks). I stood up a Gitea + Jenkins CI/CD environment with Docker Compose, implemented community, chat, and product features in React, Express, and Socket.IO, then modeled threats with STRIDE and MITRE ATT&CK. Starting from an input-validation bypass in chat, I escalated an UPDATE-based blind SQL injection to full database access (rated Critical) and recommended parameter binding and an ORM migration.",
-      ko: "레드팀 의뢰를 가정해 레거시 이커머스 서비스를 직접 구축하고 공격자 관점으로 진단한 프로젝트(4명, 2주). Docker Compose로 Gitea·Jenkins CI/CD 환경을 세우고 React·Express·Socket.IO로 커뮤니티·채팅·상품 기능을 구현한 뒤, STRIDE·MITRE ATT&CK로 위협을 도출했습니다. 채팅 입력값 검증 우회에서 출발해 UPDATE 기반 Blind SQL Injection으로 전체 DB 접근이 가능함을 확인(Critical)하고, 파라미터 바인딩과 ORM 전환을 권고했습니다.",
+      en: "A legacy second-hand marketplace I built and then attacked under a simulated red-team engagement (team of 4). I implemented the service in React and Node.js and stood up a segmented network (external / internal / dev) with a Gitea + Jenkins CI/CD pipeline. Threats were modeled with DFD/STRIDE and MITRE ATT&CK; I demonstrated a SQL injection that bypassed login auth and leaked member data, then recommended parameter binding and input validation.",
+      ko: "가상 고객사의 의뢰를 가정해 레거시 중고거래 플랫폼을 직접 구축하고 공격자 관점에서 진단한 프로젝트(4인). React·Node.js로 서비스를 구현하고 외부·내부·개발망을 분리한 Gitea·Jenkins CI/CD 환경을 구축했습니다. DFD/STRIDE·MITRE ATT&CK로 침투 시나리오를 실증했고, 로그인·채팅 입력의 SQL Injection으로 인증 우회와 회원 정보 유출을 확인해 파라미터 바인딩·입력 검증을 권고했습니다.",
     },
   },
   {
     number: "02",
     title: "Secure Workspace",
-    category: "Cloud / Security",
-    tools: ["FastAPI", "RBAC / JWT", "MySQL / RDS", "DynamoDB", "S3", "Terraform", "GitHub Actions"],
-    github: "https://github.com/jeshin119/secure-workspace-platform",
+    category: "Backend / Cloud",
+    image: "/images/img_secWork4.png",
+    imageFit: "contain",
+    tools: [
+      "FastAPI",
+      "RBAC / JWT",
+      "AWS EKS · RDS · DynamoDB · S3",
+      "Terraform",
+      "GitHub Actions",
+    ],
+    github: "https://github.com/jeshin119/fastapi-safe-slack",
     description: {
-      en: "A security-hardened collaboration platform for organizations that handle sensitive data. On a team of five I owned the database design and 27 FastAPI REST endpoints. I modeled a seven-level role hierarchy as RBAC across ten tables wired to JWT auth, and added time-bound access control in middleware for fixed-term users. Storage was split by access pattern — RDS for relational integrity, S3 with private ACLs for files, DynamoDB for chat — with infrastructure and deploys automated via Terraform and GitHub Actions.",
-      ko: "민감 정보를 다루는 조직을 위한 보안 강화 협업 플랫폼. 5명 팀에서 DB 설계와 FastAPI REST API 27개를 전담했습니다. 직책 7단계 권한을 10개 테이블의 RBAC로 설계해 JWT 인증과 연결하고, 파견 인력을 위한 시간 기반 접근제어를 미들웨어로 구현했습니다. 데이터 특성에 따라 RDS·S3(private ACL)·DynamoDB로 스토리지를 분리하고, Terraform과 GitHub Actions로 인프라·배포를 자동화했습니다.",
+      en: "A collaboration service focused on access control and supply-chain security for organizations handling sensitive data (team of 5). I owned the API and database design and the FastAPI backend, modeling multi-dimensional RBAC — per-role and per-file permissions, contractor expiry dates — across 10 tables. Chat runs on DynamoDB, files on S3 pre-signed URLs, and relational data on RDS; I codified the EKS infrastructure with Terraform and integrated pre-deploy vulnerability scanning into GitHub Actions.",
+      ko: "민감 정보를 다루는 조직을 위한 접근 통제·공급망 보안 중심의 협업 서비스(5인). API·데이터베이스 설계와 FastAPI 백엔드를 맡아 직급별·파일별 권한과 파견직 만료일까지 다루는 다차원 RBAC를 10개 테이블로 모델링했습니다. 채팅은 DynamoDB, 파일은 S3 Pre-signed URL, 관계형 데이터는 RDS로 분리하고, Terraform으로 EKS 인프라를 코드화한 뒤 GitHub Actions에 배포 전 취약점 스캔을 통합했습니다.",
     },
   },
   {
     number: "03",
     title: "IaC Security Automation",
-    category: "Security / Infra",
-    tools: ["Ansible", "Trivy / SBOM", "Web Fuzzing", "LangChain", "RAG / ChromaDB", "Streamlit"],
-    github: "https://github.com/jeshin119/iac-security-automation",
+    category: "DevSecOps / AI",
+    image: "/images/img_iacSecAuto.png",
+    tools: [
+      "Ansible",
+      "Python",
+      "Trivy · Semgrep",
+      "LangChain",
+      "ChromaDB",
+      "GPT-4",
+      "Streamlit",
+    ],
+    github: "https://github.com/kcs2183/Automate-server-vulnerability-scanning",
     description: {
-      en: "Bundles multiple security assessments into one automated, code-driven pipeline. On a team of five I owned the Ansible setup, SBOM-based CVE scanning, dynamic web fuzzing, and a LangChain/RAG pipeline. Checks were codified in Ansible for idempotency, with Trivy generating SBOMs matched against CVEs. When mapping findings to MITRE ATT&CK for remediation, I grounded the LLM in a RAG store built only from official MITRE docs in ChromaDB to prevent hallucination, and surfaced everything in a Streamlit dashboard — cutting a full-day assessment down to 30 minutes.",
-      ko: "여러 보안 진단을 코드로 묶어 자동화한 파이프라인. 5명 팀에서 Ansible 환경 구성, SBOM 기반 CVE 진단, 웹 퍼징 동적 진단, LangChain·RAG 파이프라인을 맡았습니다. 멱등성을 위해 점검 절차를 Ansible로 코드화하고 Trivy로 SBOM·CVE를 매칭했습니다. 진단 결과를 MITRE ATT&CK에 매핑해 조치를 제안할 때는 공식 문서만 ChromaDB에 적재한 RAG로 LLM 환각을 차단하고, Streamlit 대시보드로 시각화해 하루 걸리던 진단을 30분으로 줄였습니다.",
+      en: "A pipeline that automates multiple security assessments with Ansible and generates tailored remediation guides with an LLM (team of 5, as PM). Findings from KISA checks, static/dynamic analysis, and CVE scans are normalized into standardized JSON and mapped to MITRE ATT&CK, then a ChromaDB + GPT-4 RAG grounds the remediation guides in real references. Targets stay untouched by using SSH only; I cut GPT-4 token cost by feeding just distilled findings, and surfaced results in a Streamlit dashboard.",
+      ko: "여러 보안 점검을 Ansible로 자동화하고 LLM으로 맞춤형 조치 가이드를 생성하는 파이프라인(5인, PM). KISA 가이드·정적/동적 분석·CVE 스캔 결과를 표준 JSON으로 정규화해 MITRE ATT&CK에 매핑하고, ChromaDB·GPT-4 기반 RAG로 근거 있는 조치 가이드를 자동 생성했습니다. 대상 서버엔 SSH만 사용해 부담을 줄이고, 핵심 데이터만 정제해 전달함으로써 GPT-4 토큰 비용을 최적화했으며 결과는 Streamlit 대시보드로 시각화했습니다.",
     },
   },
   {
     number: "04",
     title: "42Seoul Projects",
     category: "Systems",
-    tools: ["C++", "HTTP/1.1", "CGI", "kqueue", "Nginx", "Docker"],
+    image: "/images/img_42seoul.png",
+    imageFit: "contain",
+    tools: [
+      "C",
+      "C++",
+      "pthread",
+      "Socket Programming",
+      "Docker",
+      "Nginx",
+      "Bash",
+    ],
     github: "https://github.com/jeshin119/42Seoul_Projects",
     description: {
-      en: "The flagship of my 42Seoul work: a from-scratch web server in C++ that behaves like Nginx (3 people, 4 weeks), where I owned HTTP response generation. I split responses into status line, headers, and body behind dedicated managers, and inverted the build order to construct the error body first so any mid-way failure could still be reported. Concurrency ran on non-blocking I/O with kqueue, reaching 99.5%+ availability under siege load tests with zero memory leaks confirmed by the leaks tool.",
-      ko: "프레임워크 없이 Nginx처럼 동작하는 웹 서버를 C++로 직접 구현한 42서울 대표 프로젝트(3명, 4주). 저는 HTTP 응답 생성을 전담했습니다. 응답을 상태줄·헤더·바디로 나눠 매니저로 구조화하고, 에러 바디를 먼저 확정하도록 순서를 뒤집어 어느 단계에서 문제가 생겨도 원인을 응답에 담게 했습니다. 동시 접속은 kqueue 논블로킹 I/O로 처리해 siege 부하 테스트에서 가용성 99.5% 이상, leaks 도구로 메모리 누수 0을 확인했습니다.",
+      en: "A collection of 42Seoul curriculum projects spanning language fundamentals and memory management to systems programming, data structures, concurrency, graphics, networking, and containers. Following a requirements → design → implementation → testing loop on each, I built in C and C++ a custom standard library, a shell, multithreaded concurrency, a raycasting engine, a non-blocking web server, and Docker-based infrastructure — most of them through peer collaboration and code review.",
+      ko: "언어 펀더멘탈과 메모리 관리부터 시스템 프로그래밍·자료구조·동시성·그래픽스·네트워크·컨테이너까지 아우르는 42서울 커리큘럼 프로젝트 모음. 요구사항 정의→설계→구현→테스트 흐름을 프로젝트마다 반복하며, C·C++로 표준 라이브러리부터 쉘, 멀티스레드 동시성, 레이캐스팅 엔진, 논블로킹 웹서버, Docker 기반 인프라까지 직접 구현했습니다. 대부분 동료와의 협업과 코드 리뷰로 진행했습니다.",
     },
   },
 ];
@@ -85,7 +126,7 @@ export interface TechItem {
   color: string; // brand color
 }
 
-/** 역정삼각형 배치(6-5-4-3-2): 위→아래로 한 줄씩 좁아진다. 아래 꼭짓점은 보안 툴. */
+/** 역삼각형 배치(6-5-4-3-2-1): 위→아래로 한 줄씩 좁아진다. 아래 꼭짓점은 보안 툴. */
 export const techRows: TechItem[][] = [
   // 언어 (6)
   [
@@ -96,13 +137,13 @@ export const techRows: TechItem[][] = [
     { name: "SQL", icon: "sql", color: "#00758f" },
     { name: "Shell Script", icon: "shell", color: "#4eaa25" },
   ],
-  // 백엔드 / 데이터 / OS (5)
+  // 백엔드 / 프레임워크 / 데이터 (5)
   [
     { name: "Spring", icon: "spring", color: "#6db33f" },
     { name: "FastAPI", icon: "fastapi", color: "#009688" },
     { name: "Node.js", icon: "node", color: "#5fa04e" },
+    { name: "Next.js", icon: "nextjs", color: "#000000" },
     { name: "MySQL", icon: "mysql", color: "#4479a1" },
-    { name: "Linux", icon: "linux", color: "#f0a020" },
   ],
   // 컨테이너 / 클라우드 / CI (4)
   [
@@ -111,15 +152,17 @@ export const techRows: TechItem[][] = [
     { name: "Jenkins", icon: "jenkins", color: "#d24939" },
     { name: "Ansible", icon: "ansible", color: "#ee0000" },
   ],
-  // 가상화 / 버전관리 (3)
+  // OS / 가상화 / 버전관리 (3)
   [
+    { name: "Linux", icon: "linux", color: "#f0a020" },
     { name: "VMware", icon: "vmware", color: "#607078" },
     { name: "Git", icon: "git", color: "#f05032" },
-    { name: "GitHub", icon: "github", color: "#181717" },
   ],
-  // 보안 툴 (2)
+  // 버전관리 / 보안 (2)
   [
+    { name: "GitHub", icon: "github", color: "#181717" },
     { name: "Wireshark", icon: "wireshark", color: "#1679a7" },
-    { name: "Burp Suite", icon: "burpsuite", color: "#ff6633" },
   ],
+  // 보안 툴 (1) — 아래 꼭짓점
+  [{ name: "Burp Suite", icon: "burpsuite", color: "#ff6633" }],
 ];

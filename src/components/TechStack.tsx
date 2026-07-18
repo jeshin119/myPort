@@ -16,6 +16,7 @@ import {
   SiJenkins,
   SiLinux,
   SiMysql,
+  SiNextdotjs,
   SiNodedotjs,
   SiPython,
   SiSpring,
@@ -37,6 +38,7 @@ const iconMap: Record<string, IconType> = {
   spring: SiSpring,
   fastapi: SiFastapi,
   node: SiNodedotjs,
+  nextjs: SiNextdotjs,
   mysql: SiMysql,
   linux: SiLinux,
   // 인프라 / DevOps

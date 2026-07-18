@@ -8,26 +8,27 @@
   "hero": {
     "greeting": "Hello! I'm",
     "name": "Jeshin",
+    "nameSuffix": "",
     "role": "A BACKEND DEVELOPER",
-    "tagline": "From a from-scratch web server to backend services, infrastructure, and AI — I build things end to end and see them through.",
+    "tagline": "I build reliable APIs and infrastructure that scale.",
     "scroll": "SCROLL DOWN"
   },
   "about": {
     "label": "ABOUT ME",
-    "body": "I'm a backend developer who treats code as a way to solve problems, not just to compute answers. That conviction began with a class project modeling electric-vehicle versus combustion-engine dynamics in MATLAB, grew through a year of measuring and validating composite-material data as an undergraduate researcher, and took shape at 42Seoul, where I learned C/C++ systems programming and how verifying things at the root makes a team stronger. I've since worked across web servers, backend services, infrastructure, and AI."
+    "body": "I'm a backend developer who turns business requirements into stable server architecture and data models — using AI to move faster while verifying quality and reliability myself. At 42Seoul I built my computer-science and systems-programming foundations through project-based work, and I develop backend services and cloud environments with Python (FastAPI), Java (Spring Boot), and AWS. I want to grow into an engineer who weighs scalability and operations together."
   },
   "whatido": {
     "title": "WHAT I DO",
     "cards": {
       "backend": {
-        "title": "BACKEND DEVELOPER",
+        "title": "BACKEND DEVELOPMENT",
         "subtitle": "Designing & building server-side systems",
-        "body": "REST APIs with FastAPI, Express, and Spring, RBAC and JWT auth, and data modeling across RDS, DynamoDB, and S3. I care about secure, well-tested server code — down to building a web server from scratch."
+        "body": "REST API design, authentication and authorization, data modeling, and performance-minded server development. I value maintainable structure and clear business logic."
       },
       "infra": {
-        "title": "INFRA, SECURITY & AI",
-        "subtitle": "Shipping, securing, and operating services",
-        "body": "Containerizing with Docker, provisioning AWS with Terraform, CI/CD with GitHub Actions and Jenkins, automation with Ansible — plus security assessments and grounded LLM/RAG pipelines."
+        "title": "INFRA & DEVOPS",
+        "subtitle": "Shipping and operating services",
+        "body": "Building Docker-based container environments and AWS infrastructure, with CI/CD for stable, repeatable deployments. I aim for services designed with operations and scaling in mind."
       }
     }
   },
@@ -38,23 +39,23 @@
     "items": {
       "now": {
         "label": "NOW",
-        "heading": "Building & job hunting",
+        "heading": "Growing & job hunting",
         "body": "Sharpening my backend skills through projects while preparing to join a strong engineering team."
       },
       "2025": {
         "label": "2025",
-        "heading": "Hands-on projects",
-        "body": "Built a security-hardened collaboration platform, automated infrastructure security assessments, and ran a red-team pentest on a legacy e-commerce service — spanning backend, cloud, security, and AI."
+        "heading": "Hyundai AutoEver School — Security (2nd cohort)",
+        "body": "Studied network, system, and web-application security; AWS and cloud security; Docker/Kubernetes security; WAF/IPS operations; vulnerability assessment and penetration testing; incident response; and ISMS and information-security regulations."
       },
       "2024": {
         "label": "2024",
         "heading": "42Seoul",
-        "body": "Learned C/C++ systems programming project-first, including a from-scratch web server, and grew through peer-to-peer code review and collaboration."
+        "body": "Learned project-first, from defining requirements through design, implementation, and testing. Alongside peer collaboration and code review, I worked on custom library implementation, I/O and file handling, systems programming, data structures and algorithms, OS and servers, graphics and games, and web/full-stack."
       },
       "2023": {
         "label": "2023",
-        "heading": "Undergraduate research",
-        "body": "Spent a year measuring and validating composite-material data as an undergraduate researcher — where verifying with data, rather than trusting given values, became my default."
+        "heading": "Where it began",
+        "body": "Built my foundations by studying algorithms and networking on my own."
       }
     }
   },
@@ -95,6 +96,7 @@
         "invalidEmail": "Please enter a valid email address.",
         "tooLong": "This is too long.",
         "rateLimited": "Too many attempts. Please wait a moment before sending again.",
+        "captcha": "Please complete the verification and try again.",
         "server": "Something went wrong while sending. Please try again later.",
         "network": "Network error. Check your connection and try again.",
         "config": "The mail service isn't configured yet."

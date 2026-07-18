@@ -10,9 +10,9 @@ import {
  * POST /api/contact
  * Contact 폼 → Resend로 메일 전송.
  *
- * 스팸 방지: 허니팟 필드 + IP 기반 경량 레이트리밋.
- *  - Turnstile 대비 외부 계정/키/스크립트가 필요 없어 유지보수가 쉽고
- *    Vercel 서버리스에서 바로 동작한다.
+ * 스팸 방지: Cloudflare Turnstile(캡차) + 허니팟 필드 + IP 기반 경량 레이트리밋 +
+ * 서버측 입력 검증.
+ *  - Turnstile은 TURNSTILE_SECRET_KEY가 설정된 경우에만 검증한다(미설정 시 통과).
  *  - 인메모리 레이트리밋은 인스턴스 단위(콜드스타트 시 리셋)라 완벽하진 않지만,
  *    포트폴리오 규모의 남용 방지에는 충분한 best-effort 방어다.
  */
@@ -24,7 +24,7 @@ interface SuccessResponse {
 interface ErrorResponse {
   ok: false;
   /** 클라이언트 i18n 매핑용 에러 코드 */
-  error: "invalid" | "rateLimited" | "server" | "config";
+  error: "invalid" | "rateLimited" | "captcha" | "server" | "config";
   /** 필드별 검증 에러 (error === "invalid"일 때) */
   fields?: Record<string, string>;
 }
@@ -48,6 +48,35 @@ function isRateLimited(ip: string): boolean {
   return RATE_LIMITS.some(
     ({ windowMs, max }) => recent.filter((t) => now - t < windowMs).length > max,
   );
+}
+
+/**
+ * Cloudflare Turnstile 토큰 검증.
+ * TURNSTILE_SECRET_KEY가 없으면 캡차 기능이 꺼진 것으로 보고 통과시킨다.
+ */
+async function verifyTurnstile(token: string, ip: string): Promise<boolean> {
+  const secret = process.env.TURNSTILE_SECRET_KEY;
+  if (!secret) return true; // 캡차 미설정 → 통과
+  if (!token) return false;
+
+  try {
+    const form = new URLSearchParams({ secret, response: token });
+    if (ip && ip !== "unknown") form.set("remoteip", ip);
+
+    const res = await fetch(
+      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: form,
+      },
+    );
+    const data = (await res.json()) as { success?: boolean };
+    return data.success === true;
+  } catch (err) {
+    console.error("[contact] Turnstile verify error:", err);
+    return false;
+  }
 }
 
 function getClientIp(req: Request): string {
@@ -86,6 +115,12 @@ export async function POST(req: Request) {
   // 허니팟: 값이 차 있으면 봇 → 성공한 척하고 조용히 무시
   if (typeof body[HONEYPOT_FIELD] === "string" && body[HONEYPOT_FIELD]!.trim()) {
     return json({ ok: true }, 200);
+  }
+
+  // Turnstile 캡차 검증 (시크릿 키 미설정 시 통과)
+  const token = (body as { turnstileToken?: string }).turnstileToken ?? "";
+  if (!(await verifyTurnstile(token, getClientIp(req)))) {
+    return json({ ok: false, error: "captcha" }, 400);
   }
 
   // 서버측 검증
