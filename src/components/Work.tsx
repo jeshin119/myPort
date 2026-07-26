@@ -56,6 +56,8 @@ function ProjectCard({
   onOpen: () => void;
 }) {
   const { t, locale } = useI18n();
+  // 이미지 경로는 있으나 파일이 없거나 로드 실패 시 그라데이션 플레이스홀더로 폴백
+  const [imgError, setImgError] = useState(false);
 
   return (
     <article className="glass-card flex w-[85vw] max-w-[460px] shrink-0 flex-col rounded-3xl p-6 shadow-xl shadow-accent/5 sm:w-[460px]">

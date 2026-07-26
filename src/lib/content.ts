@@ -236,6 +236,7 @@ export const techRows: TechItem[][] = [
   [
     { name: "GitHub", icon: "github", color: "#181717" },
     { name: "Wireshark", icon: "wireshark", color: "#1679a7" },
-    { name: "Burp Suite", icon: "burpsuite", color: "#ff6633" },
   ],
+  // 보안 툴 (1) — 아래 꼭짓점
+  [{ name: "Burp Suite", icon: "burpsuite", color: "#ff6633" }],
 ];
