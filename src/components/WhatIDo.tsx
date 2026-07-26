@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useI18n } from "@/lib/i18n";
+import { useFitScale } from "@/lib/useFitScale";
 
 const cards = ["backend", "infra"] as const;
 
@@ -11,13 +12,15 @@ const cards = ["backend", "infra"] as const;
  */
 export default function WhatIDo() {
   const { t } = useI18n();
+  const { containerRef, innerRef } = useFitScale<HTMLElement, HTMLDivElement>();
 
   return (
-    <section className="mx-auto max-w-5xl px-6 py-24 lg:px-10">
+    <section ref={containerRef} className="snap-section px-6 py-24 md:py-8 lg:px-10">
+      <div ref={innerRef} className="mx-auto w-full max-w-5xl">
       <motion.h2
         initial={{ opacity: 0, y: 28 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
+        viewport={{ once: false, margin: "-80px" }}
         transition={{ duration: 0.7 }}
         className="text-center text-4xl font-black tracking-tight text-foreground/85 sm:text-5xl lg:text-6xl"
       >
@@ -30,7 +33,7 @@ export default function WhatIDo() {
             key={key}
             initial={{ opacity: 0, y: 36 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
+            viewport={{ once: false, margin: "-60px" }}
             transition={{ duration: 0.6, delay: i * 0.15 }}
             className="relative rounded-lg border border-dashed border-foreground/30 bg-white/40 p-7 backdrop-blur-sm sm:p-8"
           >
@@ -58,6 +61,7 @@ export default function WhatIDo() {
             </p>
           </motion.article>
         ))}
+      </div>
       </div>
     </section>
   );

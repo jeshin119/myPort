@@ -2,6 +2,7 @@
 
 import { I18nProvider } from "@/lib/i18n";
 import { MailPopupProvider } from "@/lib/mail-popup";
+import { useFitScale } from "@/lib/useFitScale";
 import GradientBackground from "@/components/GradientBackground";
 import SplashCursor from "@/components/SplashCursor";
 import Header from "@/components/Header";
@@ -18,6 +19,10 @@ import Footer from "@/components/Footer";
 import MailPopup from "@/components/MailPopup";
 
 export default function Home() {
+  // Contact + Footer는 한 화면(스냅 슬라이드)에 함께 배치되며, 둘을 합친 높이가
+  // 넘치면 useFitScale이 이 블록을 축소해 항상 한 화면에 들어오게 한다.
+  const { containerRef, innerRef } = useFitScale<HTMLDivElement, HTMLDivElement>();
+
   return (
     <I18nProvider>
       <MailPopupProvider>
@@ -32,8 +37,12 @@ export default function Home() {
           <Timeline />
           <Work />
           <TechStack />
-          <Contact />
-          <Footer />
+          <div ref={containerRef} className="snap-section">
+            <div ref={innerRef}>
+              <Contact />
+              <Footer />
+            </div>
+          </div>
         </main>
         <ResumeButton />
         <MailPopup />

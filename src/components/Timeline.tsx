@@ -10,6 +10,7 @@ import {
 } from "framer-motion";
 import { useI18n } from "@/lib/i18n";
 import { careerItems } from "@/lib/content";
+import { useFitScale } from "@/lib/useFitScale";
 
 /**
  * My career & experience — 세로 타임라인.
@@ -26,15 +27,21 @@ export default function Timeline() {
   });
   const smooth = useSpring(scrollYProgress, { stiffness: 120, damping: 26 });
   const dotTop = useTransform(reduceMotion ? scrollYProgress : smooth, [0, 1], ["0%", "100%"]);
+  const { containerRef, innerRef } = useFitScale<HTMLElement, HTMLDivElement>();
 
   return (
-    <section id="career" className="mx-auto max-w-7xl px-6 py-28 lg:px-16">
+    <section
+      id="career"
+      ref={containerRef}
+      className="snap-section px-6 py-24 md:py-8 lg:px-16"
+    >
+      <div ref={innerRef} className="mx-auto w-full max-w-7xl">
       <motion.h2
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
+        viewport={{ once: false, margin: "-80px" }}
         transition={{ duration: 0.6 }}
-        className="mb-16 text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl"
+        className="mb-10 text-3xl font-extrabold tracking-tight sm:text-4xl lg:mb-14 lg:text-5xl"
       >
         {t("career.title")}
       </motion.h2>
@@ -67,9 +74,9 @@ export default function Timeline() {
               key={id}
               initial={{ opacity: 0, y: 32 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
+              viewport={{ once: false, margin: "-60px" }}
               transition={{ duration: 0.55, delay: i * 0.05 }}
-              className="grid grid-cols-[52px_24px_1fr] items-start gap-x-3 py-10 sm:grid-cols-[84px_24px_1fr] sm:gap-x-6"
+              className="grid grid-cols-[52px_24px_1fr] items-start gap-x-3 py-8 sm:grid-cols-[84px_24px_1fr] sm:gap-x-6 md:py-6"
             >
               {/* 연도 */}
               <span className="pt-1 text-right text-xl font-extrabold tracking-tight text-foreground/80 sm:text-3xl">
@@ -91,6 +98,7 @@ export default function Timeline() {
             </motion.li>
           ))}
         </ol>
+      </div>
       </div>
     </section>
   );

@@ -62,7 +62,10 @@
   "work": {
     "title": "My Work",
     "subtitle": "Selected projects",
-    "tools": "Tools and features",
+    "tools": "Tools",
+    "highlights": "Key features",
+    "learnMore": "Learn more",
+    "close": "Close",
     "viewGithub": "GitHub",
     "viewDemo": "Live Demo"
   },

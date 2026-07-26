@@ -62,7 +62,10 @@
   "work": {
     "title": "프로젝트",
     "subtitle": "주요 작업물",
-    "tools": "사용 기술 및 기능",
+    "tools": "사용 기술",
+    "highlights": "주요 기능·성과",
+    "learnMore": "자세히 보기",
+    "close": "닫기",
     "viewGithub": "GitHub",
     "viewDemo": "라이브 데모"
   },
