@@ -19,13 +19,13 @@ export default function Footer() {
   const { t } = useI18n();
 
   return (
-    <footer className="relative z-10 border-t border-border-soft/70 px-6 py-20 lg:px-16">
-      <div className="mx-auto max-w-7xl">
+    <footer className="relative z-10 border-t border-border-soft/70 px-6 py-14 lg:px-16">
+      <div className="mx-auto w-full max-w-7xl">
         {/* 큰 이름 */}
         <motion.h2
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
+          viewport={{ once: false, margin: "-80px" }}
           transition={{ duration: 0.6 }}
           className="text-5xl font-extrabold uppercase tracking-tight sm:text-6xl lg:text-7xl"
         >

@@ -163,7 +163,7 @@ export default function ContactForm({ embedded = false }: { embedded?: boolean }
       noValidate
       initial={embedded ? false : { opacity: 0, y: 24 }}
       whileInView={embedded ? undefined : { opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
+      viewport={{ once: false, margin: "-60px" }}
       transition={{ duration: 0.5, delay: 0.2 }}
       className={
         embedded

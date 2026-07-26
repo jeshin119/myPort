@@ -25,6 +25,7 @@ import {
 } from "react-icons/si";
 import { useI18n } from "@/lib/i18n";
 import { techRows } from "@/lib/content";
+import { useFitScale } from "@/lib/useFitScale";
 
 const iconMap: Record<string, IconType> = {
   // 언어
@@ -117,14 +118,15 @@ function Bubbles({ reduced }: { reduced: boolean }) {
 export default function TechStack() {
   const { t } = useI18n();
   const reduceMotion = useReducedMotion();
+  const { containerRef, innerRef } = useFitScale<HTMLElement, HTMLDivElement>();
 
   return (
-    <section className="relative overflow-hidden py-28">
-      <div className="mx-auto max-w-7xl px-6 lg:px-16">
+    <section ref={containerRef} className="snap-section relative overflow-hidden py-24 md:py-8">
+      <div ref={innerRef} className="mx-auto w-full max-w-7xl px-6 lg:px-16">
         <motion.h2
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
+          viewport={{ once: false, margin: "-80px" }}
           transition={{ duration: 0.6 }}
           className="text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl"
         >
@@ -132,15 +134,15 @@ export default function TechStack() {
         </motion.h2>
         <p className="mt-3 font-semibold text-accent">{t("tech.subtitle")}</p>
 
-        <div className="relative z-10 mt-16 flex flex-col items-center gap-5">
+        <div className="relative z-10 mt-12 flex flex-col items-center gap-5 lg:mt-16">
           {techRows.map((row, rowIdx) => (
             <motion.ul
               key={rowIdx}
               initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
+              viewport={{ once: false, margin: "-40px" }}
               transition={{ duration: 0.5, delay: rowIdx * 0.12 }}
-              className="flex flex-wrap justify-center gap-4 sm:gap-5"
+              className="flex flex-wrap justify-center gap-4 sm:gap-5 lg:flex-nowrap"
             >
               {row.map((tech) => {
                 const Icon = iconMap[tech.icon];

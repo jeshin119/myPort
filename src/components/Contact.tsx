@@ -11,11 +11,15 @@ export default function Contact() {
   const { open } = useMailPopup();
 
   return (
-    <section id="contact" className="mx-auto max-w-4xl px-6 py-32 text-center">
+    <section
+      id="contact"
+      className="px-6 py-16 text-center md:py-10"
+    >
+      <div className="mx-auto w-full max-w-4xl">
       <motion.h2
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
+        viewport={{ once: false, margin: "-80px" }}
         transition={{ duration: 0.6 }}
         className="text-4xl font-extrabold tracking-tight sm:text-5xl"
       >
@@ -25,7 +29,7 @@ export default function Contact() {
       <motion.p
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
+        viewport={{ once: false }}
         transition={{ duration: 0.6, delay: 0.15 }}
         className="mx-auto mt-5 max-w-xl text-lg text-muted"
       >
@@ -38,7 +42,7 @@ export default function Contact() {
         onClick={open}
         initial={{ opacity: 0, scale: 0.9 }}
         whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
+        viewport={{ once: false }}
         transition={{ duration: 0.5, delay: 0.3 }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.97 }}
@@ -55,6 +59,7 @@ export default function Contact() {
         <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="text-muted hover:text-accent">
           <FiLinkedin size={22} />
         </a>
+      </div>
       </div>
     </section>
   );
