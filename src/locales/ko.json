@@ -63,11 +63,19 @@
     "title": "프로젝트",
     "subtitle": "주요 작업물",
     "tools": "사용 기술",
-    "highlights": "주요 기능·성과",
     "learnMore": "자세히 보기",
     "close": "닫기",
     "viewGithub": "GitHub",
-    "viewDemo": "라이브 데모"
+    "viewDemo": "라이브 데모",
+    "period": "기간",
+    "team": "인원",
+    "role": "역할",
+    "troubleshooting": "트러블슈팅",
+    "techTable": {
+      "category": "분류",
+      "tech": "기술 스택",
+      "purpose": "사용 목적"
+    }
   },
   "tech": {
     "title": "기술 스택",
