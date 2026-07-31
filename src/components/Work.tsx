@@ -1,11 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useMotionValue, useReducedMotion } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValue,
+  useReducedMotion,
+} from "framer-motion";
 import { FiArrowRight, FiExternalLink, FiGithub, FiX } from "react-icons/fi";
 import { useI18n } from "@/lib/i18n";
 import { projects, type Project } from "@/lib/content";
 import { useFitScale } from "@/lib/useFitScale";
+import MermaidDiagram from "@/components/MermaidDiagram";
+import DetailToc, { type TocEntry } from "@/components/DetailToc";
 
 /** 스크린샷 (없으면 그라데이션 플레이스홀더). 카드/모달에서 공유. */
 function Screenshot({ project }: { project: Project }) {
@@ -92,8 +99,9 @@ function ProjectCard({
         ))}
       </ul>
 
-      {/* 자세히 보기 — 상세 모달을 연다. mt-auto로 카드 하단 정렬 */}
-      <div className="mt-auto pt-6">
+      {/* 자세히 보기 — 상세 모달을 연다. + GitHub/데모(있으면) — 같은 pill 버튼 디자인으로 통일.
+          mt-auto로 카드 하단 정렬 */}
+      <div className="mt-auto flex flex-wrap items-center gap-3 pt-6">
         <button
           type="button"
           onClick={onOpen}
@@ -106,12 +114,40 @@ function ProjectCard({
             className="transition-transform group-hover/lm:translate-x-1"
           />
         </button>
+        {project.github && (
+          <a
+            href={project.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-cursor="hover"
+            className="flex items-center gap-1.5 rounded-full border border-accent/40 px-4 py-2 text-xs font-bold text-accent transition-transform hover:scale-105"
+          >
+            <FiGithub size={14} />
+            {t("work.viewGithub")}
+          </a>
+        )}
+        {project.demo && (
+          <a
+            href={project.demo}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-cursor="hover"
+            className="flex items-center gap-1.5 rounded-full border border-accent/40 px-4 py-2 text-xs font-bold text-accent transition-transform hover:scale-105"
+          >
+            <FiExternalLink size={14} />
+            {t("work.viewDemo")}
+          </a>
+        )}
       </div>
     </article>
   );
 }
 
-/** 프로젝트 상세 모달 — 전체 설명·주요 기능·기술스택·링크(GitHub 포함). */
+/**
+ * 프로젝트 상세 모달 — README 기반 헤딩 블록(##/###)을 그대로 렌더링하고,
+ * 오른쪽에 그 헤딩들에서 파생된 목차(DetailToc)를 붙인다.
+ * 레이아웃: 모바일은 세로 1컬럼(목차 pill이 맨 위) / lg 이상은 본문(좌) + 목차(우) 2컬럼.
+ */
 function ProjectModal({
   project,
   onClose,
@@ -120,6 +156,15 @@ function ProjectModal({
   onClose: () => void;
 }) {
   const { t, locale } = useI18n();
+
+  // 블록 id → DOM 엘리먼트. 목차 클릭 시 해당 블록으로 스크롤.
+  const blockRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const scrollToBlock = (id: string) => {
+    blockRefs.current[id]?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
 
   // 열려 있는 동안 ESC로 닫고, 배경 스크롤을 잠근다.
   useEffect(() => {
@@ -135,6 +180,20 @@ function ProjectModal({
       document.body.style.overflow = prevOverflow;
     };
   }, [project, onClose]);
+
+  const entries: TocEntry[] = project
+    ? project.detail.blocks.map((block) => ({
+        id: block.id,
+        level: block.level,
+        label: block.heading[locale],
+        preview: block.body
+          ? block.body[locale].split("\n\n")[0].slice(0, 140)
+          : undefined,
+        thumbnail: block.image
+          ? { src: block.image.src, alt: block.image.alt[locale] }
+          : undefined,
+      }))
+    : [];
 
   return (
     <AnimatePresence>
@@ -156,7 +215,7 @@ function ProjectModal({
             exit={{ opacity: 0, y: 24, scale: 0.97 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
             onClick={(e) => e.stopPropagation()}
-            className="glass-card relative flex max-h-[86vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl shadow-2xl shadow-accent/10"
+            className="glass-card relative flex max-h-[86vh] w-full max-w-5xl flex-col overflow-hidden rounded-3xl shadow-2xl shadow-accent/10"
           >
             <button
               type="button"
@@ -168,78 +227,241 @@ function ProjectModal({
               <FiX size={18} />
             </button>
 
-            <div className="overflow-y-auto p-7 sm:p-9 [scrollbar-width:thin]">
-              <div className="flex items-center gap-3">
-                <span className="text-3xl font-extrabold leading-none text-accent-soft/70">
-                  {project.number}
-                </span>
-                <span className="rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
-                  {project.category}
-                </span>
-              </div>
+            <div className="flex flex-1 flex-col overflow-hidden lg:flex-row">
+              <DetailToc entries={entries} onNavigate={scrollToBlock} />
 
-              <h3 className="mt-3 text-3xl font-bold">{project.title}</h3>
-
-              <div className="mt-5">
-                <Screenshot project={project} />
-              </div>
-
-              <p className="mt-6 text-sm leading-relaxed text-muted sm:text-base">
-                {project.description[locale]}
-              </p>
-
-              <p className="mt-7 text-[11px] font-bold uppercase tracking-[0.2em] text-muted">
-                {t("work.highlights")}
-              </p>
-              <ul className="mt-3 space-y-2">
-                {project.highlights[locale].map((item, i) => (
-                  <li key={i} className="flex gap-2.5 text-sm leading-relaxed">
-                    <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <p className="mt-7 text-[11px] font-bold uppercase tracking-[0.2em] text-muted">
-                {t("work.tools")}
-              </p>
-              <ul className="mt-3 flex flex-wrap gap-2">
-                {project.tools.map((tool) => (
-                  <li
-                    key={tool}
-                    className="rounded-full border border-border-soft bg-white/60 px-3 py-1 text-xs font-medium text-foreground/80"
-                  >
-                    {tool}
-                  </li>
-                ))}
-              </ul>
-
-              {(project.github || project.demo) && (
-                <div className="mt-8 flex flex-wrap gap-3">
-                  {project.github && (
-                    <a
-                      href={project.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      data-cursor="hover"
-                      className="flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-xs font-bold text-white transition-transform hover:scale-105"
-                    >
-                      <FiGithub size={14} /> {t("work.viewGithub")}
-                    </a>
-                  )}
-                  {project.demo && (
-                    <a
-                      href={project.demo}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      data-cursor="hover"
-                      className="flex items-center gap-2 rounded-full border border-foreground/20 px-5 py-2.5 text-xs font-bold transition-transform hover:scale-105"
-                    >
-                      <FiExternalLink size={14} /> {t("work.viewDemo")}
-                    </a>
-                  )}
+              <div className="order-2 min-w-0 flex-1 overflow-y-auto p-7 sm:p-9 lg:order-1 [scrollbar-width:thin]">
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl font-extrabold leading-none text-accent-soft/70">
+                    {project.number}
+                  </span>
+                  <span className="rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
+                    {project.category}
+                  </span>
                 </div>
-              )}
+
+                <h3 className="mt-3 text-3xl font-bold">{project.title}</h3>
+
+                <div className="mt-5">
+                  <Screenshot project={project} />
+                </div>
+
+                {/* 메타 라인: 기간 · 인원 · 역할 + 보조 링크(발표자료/보고서/ERD 등) */}
+                <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted">
+                  <span>
+                    <strong className="font-semibold text-foreground/80">
+                      {t("work.period")}
+                    </strong>{" "}
+                    {project.detail.meta.period}
+                  </span>
+                  <span aria-hidden>·</span>
+                  <span>
+                    <strong className="font-semibold text-foreground/80">
+                      {t("work.team")}
+                    </strong>{" "}
+                    {project.detail.meta.team[locale]}
+                  </span>
+                  <span aria-hidden>·</span>
+                  <span>
+                    <strong className="font-semibold text-foreground/80">
+                      {t("work.role")}
+                    </strong>{" "}
+                    {project.detail.meta.role[locale]}
+                  </span>
+                </div>
+                {project.detail.meta.links &&
+                  project.detail.meta.links.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+                      {project.detail.meta.links.map((link) => (
+                        <a
+                          key={link.url}
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          data-cursor="hover"
+                          className="text-xs font-semibold text-accent underline-offset-4 hover:underline"
+                        >
+                          {link.label[locale]} ↗
+                        </a>
+                      ))}
+                    </div>
+                  )}
+
+                {/* README 헤딩 블록 — level 2(##)는 본문 헤딩, level 3(###)는 좌측 보더가 있는 하위 항목.
+                    (이전엔 여기 content-visibility:auto를 걸었는데, contain-intrinsic-size 없이 쓰면
+                    크롬이 화면 밖 블록의 높이를 잘못 추정했다가 스크롤 중 실제 크기로 보정하면서 그
+                    아래 블록들이 계속 밀리는 리플로우가 생겨 오히려 더 버벅였다. 이미지·표처럼 블록마다
+                    높이 편차가 큰 지금 콘텐츠 규모(프로젝트당 최대 20개 블록)에서는 그 비용이 skip으로
+                    아끼는 비용보다 커서, 최적화가 아니라 역효과였다 — 제거.) */}
+                {(() => {
+                  // level-3 하위 항목이 여러 개 이어질 때(예: 42Seoul의 12개 프로젝트) 서로 구분이
+                  // 어려워, 직전 level-2 헤딩 이후로 몇 번째 항목인지 번호를 매기고 짝/홀에 따라
+                  // 배경을 교차시킨다.
+                  let subIndex = 0;
+                  return project.detail.blocks.map((block) => {
+                    if (block.level === 2) {
+                      subIndex = 0;
+                    } else {
+                      subIndex += 1;
+                    }
+                    const isEven = subIndex % 2 === 0;
+                    return (
+                      <div
+                        key={block.id}
+                        ref={(el) => {
+                          blockRefs.current[block.id] = el;
+                        }}
+                        className={
+                          block.level === 2
+                            ? "mt-10 scroll-mt-6"
+                            : `mt-4 scroll-mt-6 rounded-xl border-l-4 py-3 pl-4 pr-3 ${
+                                isEven
+                                  ? "border-border-soft bg-white/60"
+                                  : "border-accent/30 bg-accent/5"
+                              }`
+                        }
+                      >
+                        {block.level === 2 ? (
+                          <h4 className="text-lg font-bold text-foreground">
+                            {block.heading[locale]}
+                          </h4>
+                        ) : (
+                          <h5 className="text-sm font-bold text-foreground/90">
+                            <span className="text-muted">
+                              {String(subIndex).padStart(2, "0")}.
+                            </span>{" "}
+                            {block.heading[locale]}
+                          </h5>
+                        )}
+                        {block.techTags && (
+                          <ul className="mt-2 flex flex-wrap gap-1.5">
+                            {block.techTags.map((tag) => (
+                              <li
+                                key={tag}
+                                className="rounded-full border border-border-soft bg-white/60 px-2.5 py-0.5 text-[11px] font-medium text-foreground/80"
+                              >
+                                {tag}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                        {block.body && (
+                          <div className="mt-2 space-y-2.5">
+                            {block.body[locale].split("\n\n").map((para, i) => (
+                              <p
+                                key={i}
+                                className="text-sm leading-relaxed text-muted sm:text-[15px]"
+                              >
+                                {para}
+                              </p>
+                            ))}
+                          </div>
+                        )}
+                        {block.troubleshooting && (
+                          <div className="mt-3">
+                            <p className="text-[11px] font-bold uppercase tracking-wider text-accent">
+                              {t("work.troubleshooting")}
+                            </p>
+                            <div className="mt-1.5 space-y-2">
+                              {block.troubleshooting[locale]
+                                .split("\n\n")
+                                .map((para, i) => (
+                                  <p
+                                    key={i}
+                                    className="text-sm leading-relaxed text-muted"
+                                  >
+                                    {para}
+                                  </p>
+                                ))}
+                            </div>
+                          </div>
+                        )}
+                        {block.projectUrl && (
+                          <a
+                            href={block.projectUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            data-cursor="hover"
+                            className="mt-3 inline-block text-xs font-semibold text-accent underline-offset-4 hover:underline"
+                          >
+                            {t("work.viewGithub")} ↗
+                          </a>
+                        )}
+                        {block.image && (
+                          <figure className="mt-4">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={block.image.src}
+                              alt={block.image.alt[locale]}
+                              width={block.image.width}
+                              height={block.image.height}
+                              loading="lazy"
+                              decoding="async"
+                              className="h-auto w-full rounded-xl border border-border-soft"
+                            />
+                            {block.image.caption && (
+                              <figcaption className="mt-1.5 text-center text-xs text-muted">
+                                {block.image.caption[locale]}
+                              </figcaption>
+                            )}
+                          </figure>
+                        )}
+                        {block.diagram && (
+                          <div className="mt-4">
+                            <MermaidDiagram chart={block.diagram[locale]} />
+                            {block.diagramNote && (
+                              <p className="mt-2 text-xs italic text-muted">
+                                {block.diagramNote[locale]}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                        {block.table && (
+                          <div className="mt-4 overflow-x-auto rounded-xl border border-border-soft">
+                            <table className="w-full border-collapse text-left">
+                              <thead>
+                                <tr className="border-b border-border-soft bg-accent/5">
+                                  <th className="whitespace-nowrap px-3 py-2 text-[11px] font-bold uppercase tracking-wide text-muted">
+                                    {t("work.techTable.category")}
+                                  </th>
+                                  <th className="whitespace-nowrap px-3 py-2 text-[11px] font-bold uppercase tracking-wide text-muted">
+                                    {t("work.techTable.tech")}
+                                  </th>
+                                  <th className="px-3 py-2 text-[11px] font-bold uppercase tracking-wide text-muted">
+                                    {t("work.techTable.purpose")}
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {block.table.map((row, i) => (
+                                  <tr
+                                    key={i}
+                                    className="border-b border-border-soft align-top last:border-0"
+                                  >
+                                    <td className="whitespace-nowrap px-3 py-2.5 text-sm font-semibold text-foreground/80">
+                                      {row.category[locale]}
+                                    </td>
+                                    <td className="px-3 py-2.5 text-sm text-foreground/80">
+                                      {row.tech}
+                                    </td>
+                                    <td className="px-3 py-2.5 text-sm leading-relaxed text-muted">
+                                      {row.purpose[locale]
+                                        .split("\n")
+                                        .map((line, li) => (
+                                          <div key={li}>{line}</div>
+                                        ))}
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  });
+                })()}
+              </div>
             </div>
           </motion.div>
         </motion.div>
@@ -277,7 +499,8 @@ export default function Work() {
       const track = trackRef.current;
       const view = viewportRef.current;
       if (!track || !view || track.children.length === 0) return;
-      const last = track.children[track.children.length - 1].getBoundingClientRect();
+      const last =
+        track.children[track.children.length - 1].getBoundingClientRect();
       const viewRect = view.getBoundingClientRect();
       const zoom = parseFloat(innerRef.current?.style.zoom || "1") || 1;
       const realShift = Math.max(0, last.right - viewRect.right);
@@ -325,7 +548,9 @@ export default function Work() {
     </div>
   );
 
-  const modal = <ProjectModal project={active} onClose={() => setActive(null)} />;
+  const modal = (
+    <ProjectModal project={active} onClose={() => setActive(null)} />
+  );
 
   if (reduceMotion) {
     // reduced-motion 폴백: 세로 스택 (드래그/휠 없이 자연 스크롤)
@@ -336,7 +561,11 @@ export default function Work() {
             {heading}
             <div className="mx-auto mt-12 flex max-w-7xl flex-col items-center gap-8 px-6">
               {projects.map((p) => (
-                <ProjectCard key={p.number} project={p} onOpen={() => setActive(p)} />
+                <ProjectCard
+                  key={p.number}
+                  project={p}
+                  onOpen={() => setActive(p)}
+                />
               ))}
             </div>
           </div>
@@ -348,7 +577,11 @@ export default function Work() {
 
   return (
     <>
-      <section id="work" ref={containerRef} className="snap-section py-20 md:py-8">
+      <section
+        id="work"
+        ref={containerRef}
+        className="snap-section py-20 md:py-8"
+      >
         <div ref={innerRef}>
           {heading}
           {/* 보이는 창(overflow-hidden) 안에서 트랙을 좌우로 드래그. 세로로 넘치면
@@ -366,7 +599,11 @@ export default function Work() {
               className="flex cursor-grab items-stretch gap-6 active:cursor-grabbing sm:gap-10"
             >
               {projects.map((p) => (
-                <ProjectCard key={p.number} project={p} onOpen={() => setActive(p)} />
+                <ProjectCard
+                  key={p.number}
+                  project={p}
+                  onOpen={() => setActive(p)}
+                />
               ))}
             </motion.div>
           </div>
