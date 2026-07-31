@@ -385,20 +385,6 @@ export const projects: Project[] = [
         },
       ],
     },
-    highlights: {
-      en: [
-        "Built the service in React & Node.js (team of 4)",
-        "Segmented network (external / internal / dev) with Gitea + Jenkins CI/CD",
-        "Threat modeling with DFD/STRIDE and MITRE ATT&CK",
-        "Demonstrated SQL injection bypassing login auth and leaking member data; recommended parameter binding & input validation",
-      ],
-      ko: [
-        "React·Node.js로 서비스 직접 구현 (4인)",
-        "외부·내부·개발망 분리 + Gitea·Jenkins CI/CD 구축",
-        "DFD/STRIDE·MITRE ATT&CK로 위협 모델링",
-        "로그인 SQL Injection으로 인증 우회·회원정보 유출 실증 → 파라미터 바인딩·입력 검증 권고",
-      ],
-    },
   },
   {
     number: "02",
@@ -679,20 +665,6 @@ export const projects: Project[] = [
         },
       ],
     },
-    highlights: {
-      en: [
-        "Owned API/DB design and the FastAPI backend (team of 5)",
-        "Multi-dimensional RBAC across 10 tables — per-role/per-file permissions, contractor expiry",
-        "Chat on DynamoDB, files on S3 pre-signed URLs, relational data on RDS",
-        "EKS infra codified with Terraform; pre-deploy vulnerability scanning in GitHub Actions",
-      ],
-      ko: [
-        "API·DB 설계와 FastAPI 백엔드 담당 (5인)",
-        "10개 테이블에 걸친 다차원 RBAC — 직급별·파일별 권한, 파견직 만료일",
-        "채팅 DynamoDB, 파일 S3 Pre-signed URL, 관계형 데이터 RDS로 분리",
-        "Terraform으로 EKS 인프라 코드화, GitHub Actions에 배포 전 취약점 스캔 통합",
-      ],
-    },
   },
   {
     number: "03",
@@ -960,20 +932,6 @@ export const projects: Project[] = [
             ko: "수동으로 KISA 가이드북을 대조하고 툴을 하나씩 돌리던 과정을 클릭 몇 번으로 자동화했다는 게 가장 큰 성과였다. 다음엔 코드 모듈화를 더 다듬고, Web Fuzzing에서 사용자 입력을 줄여 자동화율을 높이고 싶다.",
           },
         },
-      ],
-    },
-    highlights: {
-      en: [
-        "PM of a team of 5; automated multiple assessments with Ansible",
-        "Normalized KISA / static-dynamic / CVE findings into standardized JSON, mapped to MITRE ATT&CK",
-        "ChromaDB + GPT-4 RAG for reference-grounded remediation guides",
-        "SSH-only access to targets; cut GPT-4 token cost via distilled findings; Streamlit dashboard",
-      ],
-      ko: [
-        "5인 팀 PM; Ansible로 다중 보안 점검 자동화",
-        "KISA·정적/동적·CVE 결과를 표준 JSON으로 정규화해 MITRE ATT&CK 매핑",
-        "ChromaDB·GPT-4 RAG로 근거 있는 조치 가이드 자동 생성",
-        "대상엔 SSH만 사용, 정제 데이터로 GPT-4 토큰 비용 절감, Streamlit 대시보드",
       ],
     },
   },
@@ -1247,20 +1205,6 @@ export const projects: Project[] = [
           },
           projectUrl: "https://github.com/jeshin119/webserv.git",
         },
-      ],
-    },
-    highlights: {
-      en: [
-        "Custom C standard library and a shell",
-        "Multithreaded concurrency and a raycasting engine",
-        "Non-blocking web server and Docker-based infrastructure",
-        "Requirements → design → implementation → testing loop, mostly via peer review",
-      ],
-      ko: [
-        "C 표준 라이브러리와 쉘 직접 구현",
-        "멀티스레드 동시성과 레이캐스팅 엔진",
-        "논블로킹 웹서버와 Docker 기반 인프라",
-        "요구사항→설계→구현→테스트 반복, 대부분 동료 코드리뷰로 진행",
       ],
     },
   },
