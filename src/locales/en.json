@@ -63,11 +63,19 @@
     "title": "My Work",
     "subtitle": "Selected projects",
     "tools": "Tools",
-    "highlights": "Key features",
     "learnMore": "Learn more",
     "close": "Close",
     "viewGithub": "GitHub",
-    "viewDemo": "Live Demo"
+    "viewDemo": "Live Demo",
+    "period": "Period",
+    "team": "Team",
+    "role": "Role",
+    "troubleshooting": "Troubleshooting",
+    "techTable": {
+      "category": "Category",
+      "tech": "Tech Stack",
+      "purpose": "Purpose"
+    }
   },
   "tech": {
     "title": "Tech Stack",
