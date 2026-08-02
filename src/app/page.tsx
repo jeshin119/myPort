@@ -3,6 +3,7 @@
 import { I18nProvider } from "@/lib/i18n";
 import { MailPopupProvider } from "@/lib/mail-popup";
 import { useFitScale } from "@/lib/useFitScale";
+import { ModalPerformanceProvider } from "@/lib/modal-performance";
 import GradientBackground from "@/components/GradientBackground";
 import SplashCursor from "@/components/SplashCursor";
 import Header from "@/components/Header";
@@ -25,28 +26,30 @@ export default function Home() {
 
   return (
     <I18nProvider>
-      <MailPopupProvider>
-        <GradientBackground />
-        <SplashCursor />
-        <Header />
-        <SideSocials />
-        <main className="relative z-10">
-          <Hero />
-          <About />
-          <WhatIDo />
-          <Timeline />
-          <Work />
-          <TechStack />
-          <div ref={containerRef} className="snap-section">
-            <div ref={innerRef}>
-              <Contact />
-              <Footer />
+      <ModalPerformanceProvider>
+        <MailPopupProvider>
+          <GradientBackground />
+          <SplashCursor />
+          <Header />
+          <SideSocials />
+          <main className="relative z-10">
+            <Hero />
+            <About />
+            <WhatIDo />
+            <Timeline />
+            <Work />
+            <TechStack />
+            <div ref={containerRef} className="snap-section">
+              <div ref={innerRef}>
+                <Contact />
+                <Footer />
+              </div>
             </div>
-          </div>
-        </main>
-        <ResumeButton />
-        <MailPopup />
-      </MailPopupProvider>
+          </main>
+          <ResumeButton />
+          <MailPopup />
+        </MailPopupProvider>
+      </ModalPerformanceProvider>
     </I18nProvider>
   );
 }

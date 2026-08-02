@@ -14,6 +14,7 @@
  */
 
 import { useEffect, useRef } from "react";
+import { useModalPerformance } from "@/lib/modal-performance";
 
 interface SplashCursorProps {
   SIM_RESOLUTION?: number;
@@ -49,6 +50,16 @@ export default function SplashCursor({
   TRANSPARENT = true,
 }: SplashCursorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { isModalOpen } = useModalPerformance();
+  // updateFrame이 매 프레임 참조하는 최신 값. WebGL 컨텍스트/리소스는 마운트 시
+  // 한 번만 만들고, 모달이 열려 있는 동안엔 시뮬레이션 스텝만 건너뛴다 —
+  // 열고 닫을 때마다 effect를 재실행하면 텍스처·프레임버퍼·셰이더 프로그램이
+  // 해제 없이 계속 새로 생성되어 GPU 메모리가 누적된다.
+  const isModalOpenRef = useRef(isModalOpen);
+
+  useEffect(() => {
+    isModalOpenRef.current = isModalOpen;
+  }, [isModalOpen]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -968,6 +979,12 @@ export default function SplashCursor({
     }
 
     function updateFrame() {
+      // 모달이 열려 있으면 캔버스가 보이지 않으므로 시뮬레이션/렌더를 건너뛴다.
+      // rAF 루프 자체는 유지해 모달이 닫히는 즉시 이어서 재개할 수 있게 한다.
+      if (isModalOpenRef.current) {
+        animationId = requestAnimationFrame(updateFrame);
+        return;
+      }
       const dt = calcDeltaTime();
       if (resizeCanvas()) initFramebuffers();
       updateColors(dt);
@@ -986,13 +1003,13 @@ export default function SplashCursor({
       clickSplat(pointer);
     };
 
-    // 첫 mousemove: 컬러 부여 후 프레임 시작 유도(원본 동작 재현)
+    // 렌더 루프는 초기화 시 이미 시작한다. 여기서 다시 시작하면 rAF 루프가
+    // 중복되어 GPU 작업이 누적된다.
     const handleFirstMouseMove = (e: MouseEvent) => {
       const pointer = pointers[0];
       const posX = scaleByPixelRatio(e.clientX);
       const posY = scaleByPixelRatio(e.clientY);
       const color = generateColor();
-      updateFrame();
       updatePointerMoveData(pointer, posX, posY, color);
       document.body.removeEventListener("mousemove", handleFirstMouseMove);
     };
@@ -1011,7 +1028,6 @@ export default function SplashCursor({
       for (let i = 0; i < touches.length; i++) {
         const posX = scaleByPixelRatio(touches[i].clientX);
         const posY = scaleByPixelRatio(touches[i].clientY);
-        updateFrame();
         updatePointerDownData(pointer, touches[i].identifier, posX, posY);
       }
       document.body.removeEventListener("touchstart", handleFirstTouchStart);
@@ -1075,7 +1091,7 @@ export default function SplashCursor({
   return (
     <div
       className="pointer-events-none fixed inset-0"
-      style={{ zIndex: -1 }}
+      style={{ zIndex: -1, visibility: isModalOpen ? "hidden" : "visible" }}
       aria-hidden
     >
       <canvas ref={canvasRef} id="fluid" className="h-full w-full" />
