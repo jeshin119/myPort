@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import { useModalPerformance } from "@/lib/modal-performance";
 
 /**
  * 파스텔 그라데이션 blob 배경 (레퍼런스 B 톤).
@@ -47,6 +48,7 @@ const blobs: Blob[] = [
 
 export default function GradientBackground() {
   const reduceMotion = useReducedMotion();
+  const { isModalOpen } = useModalPerformance();
 
   return (
     <div
@@ -66,7 +68,7 @@ export default function GradientBackground() {
             opacity: 0.55,
             filter: "blur(60px)",
           }}
-          animate={reduceMotion ? undefined : blob.animate}
+          animate={reduceMotion || isModalOpen ? undefined : blob.animate}
           transition={{
             duration: blob.duration,
             repeat: Infinity,

@@ -11,6 +11,7 @@ import { FiArrowRight, FiExternalLink, FiGithub, FiX } from "react-icons/fi";
 import { useI18n } from "@/lib/i18n";
 import { projects, type Project } from "@/lib/content";
 import { useFitScale } from "@/lib/useFitScale";
+import { useModalPerformance } from "@/lib/modal-performance";
 import MermaidDiagram from "@/components/MermaidDiagram";
 import DetailToc, { type TocEntry } from "@/components/DetailToc";
 
@@ -63,8 +64,6 @@ function ProjectCard({
   onOpen: () => void;
 }) {
   const { t, locale } = useI18n();
-  // 이미지 경로는 있으나 파일이 없거나 로드 실패 시 그라데이션 플레이스홀더로 폴백
-  const [imgError, setImgError] = useState(false);
 
   return (
     <article className="glass-card flex w-[85vw] max-w-[460px] shrink-0 flex-col rounded-3xl p-6 shadow-xl shadow-accent/5 sm:w-[460px]">
@@ -158,6 +157,7 @@ function ProjectModal({
   onClose: () => void;
 }) {
   const { t, locale } = useI18n();
+  const { setModalOpen } = useModalPerformance();
 
   // 블록 id → DOM 엘리먼트. 목차 클릭 시 해당 블록으로 스크롤.
   const blockRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -177,11 +177,13 @@ function ProjectModal({
     window.addEventListener("keydown", onKey);
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    setModalOpen(true);
     return () => {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = prevOverflow;
+      setModalOpen(false);
     };
-  }, [project, onClose]);
+  }, [project, onClose, setModalOpen]);
 
   const entries: TocEntry[] = project
     ? project.detail.blocks.map((block) => ({
@@ -206,7 +208,7 @@ function ProjectModal({
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
           onClick={onClose}
-          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm sm:p-6"
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4 sm:p-6"
         >
           <motion.div
             role="dialog"
@@ -217,7 +219,7 @@ function ProjectModal({
             exit={{ opacity: 0, y: 24, scale: 0.97 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
             onClick={(e) => e.stopPropagation()}
-            className="glass-card relative flex max-h-[86vh] w-full max-w-5xl flex-col overflow-hidden rounded-3xl shadow-2xl shadow-accent/10"
+            className="relative flex max-h-[86vh] w-full max-w-5xl flex-col overflow-hidden rounded-3xl border border-border-soft bg-white/95 shadow-2xl shadow-accent/10"
           >
             <button
               type="button"
@@ -410,7 +412,10 @@ function ProjectModal({
                         )}
                         {block.diagram && (
                           <div className="mt-4">
-                            <MermaidDiagram chart={block.diagram[locale]} />
+                            <MermaidDiagram
+                              key={block.diagram[locale]}
+                              chart={block.diagram[locale]}
+                            />
                             {block.diagramNote && (
                               <p className="mt-2 text-xs italic text-muted">
                                 {block.diagramNote[locale]}

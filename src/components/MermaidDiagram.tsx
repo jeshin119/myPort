@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 /** globals.css의 실제 팔레트 값(단일 라이트 테마)을 그대로 하드코딩해 mermaid 테마에 맞춘다. */
 const THEME_VARIABLES = {
@@ -16,33 +16,58 @@ const THEME_VARIABLES = {
   edgeLabelBackground: "#ffffff",
 };
 
+// 모달을 닫으면 다이어그램 컴포넌트는 언마운트된다. 결과를 모듈 단위로 보관해
+// 같은 프로젝트를 다시 열 때 Mermaid 파싱·SVG 생성을 반복하지 않는다.
+const renderedCharts = new Map<string, string | null>();
+const renderingCharts = new Map<string, Promise<string | null>>();
+let renderSequence = 0;
+
+async function renderChart(chart: string) {
+  if (renderedCharts.has(chart)) return renderedCharts.get(chart) ?? null;
+
+  const pending = renderingCharts.get(chart);
+  if (pending) return pending;
+
+  const rendering = (async () => {
+    const { default: mermaid } = await import("mermaid");
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: "base",
+      themeVariables: THEME_VARIABLES,
+      securityLevel: "strict",
+    });
+    try {
+      const { svg } = await mermaid.render(`mermaid-${++renderSequence}`, chart);
+      renderedCharts.set(chart, svg);
+      return svg;
+    } catch {
+      renderedCharts.set(chart, null);
+      return null;
+    } finally {
+      renderingCharts.delete(chart);
+    }
+  })();
+
+  renderingCharts.set(chart, rendering);
+  return rendering;
+}
+
 /** Warden 프로젝트의 아키텍처 다이어그램처럼, mermaid 소스가 있는 경우에만 렌더링. */
 export default function MermaidDiagram({ chart }: { chart: string }) {
-  const id = useId().replace(/[^a-zA-Z0-9-]/g, "");
-  const [svg, setSvg] = useState<string | null>(null);
-  const mountedRef = useRef(true);
+  const [svg, setSvg] = useState<string | null>(() => renderedCharts.get(chart) ?? null);
 
   useEffect(() => {
-    mountedRef.current = true;
-    (async () => {
-      const { default: mermaid } = await import("mermaid");
-      mermaid.initialize({
-        startOnLoad: false,
-        theme: "base",
-        themeVariables: THEME_VARIABLES,
-        securityLevel: "strict",
+    let cancelled = false;
+    if (!renderedCharts.has(chart)) {
+      void renderChart(chart).then((rendered) => {
+        if (!cancelled) setSvg(rendered);
       });
-      try {
-        const { svg: rendered } = await mermaid.render(`mermaid-${id}`, chart);
-        if (mountedRef.current) setSvg(rendered);
-      } catch {
-        if (mountedRef.current) setSvg(null);
-      }
-    })();
+    }
+
     return () => {
-      mountedRef.current = false;
+      cancelled = true;
     };
-  }, [chart, id]);
+  }, [chart]);
 
   if (!svg) {
     return (
