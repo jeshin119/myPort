@@ -15,7 +15,7 @@
   },
   "about": {
     "label": "ABOUT ME",
-    "body": "I'm a backend developer who turns business requirements into stable server architecture and data models — using AI to move faster while verifying quality and reliability myself. At 42Seoul I built my computer-science and systems-programming foundations through project-based work, and I develop backend services and cloud environments with Python (FastAPI), Java (Spring Boot), and AWS. I want to grow into an engineer who weighs scalability and operations together."
+    "body": "I'm a backend developer who analyzes business requirements and data flow, then designs and implements them as system architecture and data models.\n\nI design APIs and data models by weighing requirements alongside technical constraints, and I've built services with scalability and operations in mind. In collaboration, I clarify the product intent and implementation scope, then turn requirements into systems by working through development-side constraints and implementation approaches.\n\nFor repetitive implementation and documentation, I use AI tools to boost productivity, while personally reviewing and testing the results to verify they match the design intent and requirements."
   },
   "whatido": {
     "title": "WHAT I DO",
